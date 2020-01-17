@@ -1,8 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { IsString, IsNotEmpty, MaxLength } from 'class-validator';
 
-@Entity('category')
-export class Category {
+@Entity('product')
+export class ProductEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -12,10 +12,10 @@ export class Category {
     @MaxLength(250)
     name: string;
 
-    @CreateDateColumn()
+    @Column({type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'})
     createdAt: Date;
 
-    @UpdateDateColumn({nullable: true})
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'})
     updatedAt: Date;
 
     @Column({nullable: true, type: 'timestamp'})
