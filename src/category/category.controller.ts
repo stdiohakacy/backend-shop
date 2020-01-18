@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, UsePipes, Param, Put } from '@nestjs/common';
+import { Controller, Post, Body, Get, UsePipes, Param, Put, Delete } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCateDTO } from './dto/create-category.dto';
 import { ICategoryRO, ICategoriesRO } from './category.interface';
@@ -14,6 +14,11 @@ export class CategoryController {
         return await this.categoryService.findCategories();
     }
 
+    @Get('/:id')
+    async findCategory(@Param() id: number): Promise<ICategoryRO> {
+        return await this.categoryService.findCategory(id);
+    }
+
     @UsePipes(new ValidationPipe())
     @Post()
     async createCategory(@Body() createCateDTO: CreateCateDTO): Promise<ICategoryRO> {
@@ -24,5 +29,10 @@ export class CategoryController {
     @Put('/:id')
     async updateCategory(@Param() id: number, @Body() updateCateDTO: UpdateCateDTO): Promise<ICategoryRO> {
         return await this.categoryService.updateCategory(id, updateCateDTO);
+    }
+
+    @Delete('/:id')
+    async deleteCategory(@Param() id: number): Promise<boolean> {
+        return await this.categoryService.deleteCategory(id);
     }
 }

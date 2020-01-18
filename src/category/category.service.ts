@@ -31,6 +31,28 @@ export class CategoryService {
         return builedCategories;
     }
 
+    async findCategories(): Promise<ICategoriesRO> {
+        const query = await getRepository(Category).createQueryBuilder('category');
+
+        query.orderBy('createdAt', 'DESC');
+        query.where('deletedAt IS NULL');
+
+        const count = await query.getCount();
+        const categories = await query.getMany();
+        const buildedCategories = this.buildCategories(categories);
+
+        return {categories: buildedCategories, count};
+    }
+
+    async findCategory(id: number): Promise<ICategoryRO> {
+        const category = await this.categoryRepository.findOne(id);
+
+        const entity = new Category();
+        entity.name = category.name;
+        
+        return this.buildCategory(entity);
+    }
+
     async createCategory(createCateDTO: CreateCateDTO): Promise<ICategoryRO> {
         const {name} = createCateDTO;
 
@@ -40,23 +62,18 @@ export class CategoryService {
         const createdCategory = await this.categoryRepository.save(category);
         return this.buildCategory(createdCategory);
     }
-
-    async findCategories(): Promise<ICategoriesRO> {
-        const query = await getRepository(Category).createQueryBuilder('category');
-
-        query.orderBy('createdAt', 'DESC');
-
-        const count = await query.getCount();
-        const categories = await query.getMany();
-        const buildedCategories = this.buildCategories(categories);
-
-        return {categories: buildedCategories, count};
-    }
     async updateCategory(id: number, updateCateDTO: UpdateCateDTO): Promise<ICategoryRO> {
         const {name} = updateCateDTO;
         const category = await this.categoryRepository.findOne(id);
         category.name = name;
         await this.categoryRepository.save(category);
         return this.buildCategory(category);
+    }
+
+    async deleteCategory(id: number): Promise<boolean> {
+        const category = await this.categoryRepository.findOne(id);
+        category.deletedAt = new Date();
+        await this.categoryRepository.save(category);
+        return true;
     }
 }
