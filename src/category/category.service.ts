@@ -3,7 +3,7 @@ import { CreateCateDTO } from './dto/create-category.dto';
 import { Category } from './category.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository } from 'typeorm';
+import { Repository, IsNull } from 'typeorm';
 import { ICategoryRO, ICategoriesRO } from './category.interface';
 
 @Injectable()
@@ -22,26 +22,23 @@ export class CategoryService {
         return {category: buildedCategory};
     }
 
-    private buildCategories(categoriesEntity: Category[]) {
+    private buildCategories(categories: Category[]) {
         const builedCategories = [];
-        for (const categoryEntity of categoriesEntity) {
-            const data = this.buildCategory(categoryEntity);
+        for (const category of categories) {
+            const data = this.buildCategory(category);
             builedCategories.push(data);
         }
         return builedCategories;
     }
 
     async findCategories(): Promise<ICategoriesRO> {
-        const query = await getRepository(Category).createQueryBuilder('category');
-
-        query.orderBy('createdAt', 'DESC');
-        query.where('deletedAt IS NULL');
-
-        const count = await query.getCount();
-        const categories = await query.getMany();
-        const buildedCategories = this.buildCategories(categories);
-
-        return {categories: buildedCategories, count};
+        const [categories, count] = await this.categoryRepository
+                                    .findAndCount({
+                                        order: {createdAt: 'DESC'}, 
+                                        where: {deletedAt: IsNull()}});
+        
+        const builedCategories = this.buildCategories(categories);
+        return {categories: builedCategories, count};
     }
 
     async findCategory(id: number): Promise<ICategoryRO> {
