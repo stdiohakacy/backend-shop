@@ -3,11 +3,9 @@ export interface ICategoryData {
     createdAt?: Date;
     updatedAt?: Date;
 }
-
 export interface ICategoryRO {
     category: ICategoryData;
 }
-
 export interface ICategoriesRO {
     categories: ICategoryData[];
     count: number;

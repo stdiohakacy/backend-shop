@@ -1,14 +1,16 @@
-export interface CategoryData {
+export interface IProductData {
     name: string;
+    price: number;
+    image: string;
     createdAt?: Date;
     updatedAt?: Date;
 }
 
-export interface CategoryRO {
-    category: CategoryData;
+export interface IProductRO {
+    product: IProductData;
 }
 
-export interface CategoriesRO {
-    categories: CategoryData[];
+export interface IProductsRO {
+    products: IProductData[];
     count: number;
 }

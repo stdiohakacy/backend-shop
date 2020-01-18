@@ -13,11 +13,11 @@ export class CategoryService {
         private readonly categoryRepository: Repository<Category>,
     ) {}
 
-    private buildCategory(categoryEntity: Category) {
+    private buildCategory(category: Category) {
         const buildedCategory = {
-            name: categoryEntity.name,
-            createdAt: categoryEntity.createdAt,
-            updatedAt: categoryEntity.updatedAt,
+            name: category.name,
+            createdAt: category.createdAt,
+            updatedAt: category.updatedAt,
         };
         return {category: buildedCategory};
     }
@@ -33,9 +33,9 @@ export class CategoryService {
 
     async findCategories(): Promise<ICategoriesRO> {
         const [categories, count] = await this.categoryRepository
-                                    .findAndCount({
-                                        order: {createdAt: 'DESC'}, 
-                                        where: {deletedAt: IsNull()}});
+            .findAndCount({
+                order: {createdAt: 'DESC'}, 
+                where: {deletedAt: IsNull()}});
         
         const builedCategories = this.buildCategories(categories);
         return {categories: builedCategories, count};
