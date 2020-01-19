@@ -4,7 +4,7 @@ import { Category } from './category.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull } from 'typeorm';
-import { ICategoriesResultObject, ICategoryResultObject } from './category.interface';
+import { ICategoriesResultObject } from './category.interface';
 import CategoryView from './view/category.view';
 
 @Injectable()

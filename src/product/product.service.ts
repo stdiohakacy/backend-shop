@@ -3,7 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './product.entity';
 import { Repository, IsNull } from 'typeorm';
-import { IProductsRO, IProductRO } from './product.interface';
+import { IProductsResultObject } from './product.interface';
+import ProductView from './view/product.view';
 
 @Injectable()
 export class ProductService {
@@ -11,34 +12,17 @@ export class ProductService {
         private readonly productRepository: Repository<Product>,
     ) {}
 
-    private buildProduct(product: Product) {
-        const buildedProduct = {
-            name: product.name,
-            price: product.price,
-            image: product.image,
-            createdAt: product.createdAt,
-            updatedAt: product.updatedAt,
-        };
-        return {product: buildedProduct};
+    async findProducts(): Promise<IProductsResultObject> {
+        const [productsRepository, count] = await this.productRepository
+            .findAndCount({
+                order: {createdAt: 'DESC'}, 
+                where: {deletedAt: IsNull()}, relations: ['category']});
+
+        const products = ProductView.transformList(productsRepository);
+        return {products, count};
     }
 
-    private buildProducts(products: Product[]) {
-        const builedProducts = [];
-        for (const product of products) {
-            const data = this.buildProduct(product);
-            builedProducts.push(data);
-        }
-        return builedProducts;
-    }
-
-    async findProducts(): Promise<IProductsRO> {
-        const [products, count] = await this.productRepository.findAndCount({order: {createdAt: 'DESC'}, where: {deletedAt: IsNull()}});
-
-        const builedProducts = this.buildProducts(products);
-        return {products: builedProducts, count};
-    }
-
-    async createProduct(createProductDTO: CreateProductDTO): Promise<IProductRO> {
+    async createProduct(createProductDTO: CreateProductDTO): Promise<ProductView> {
         const {name, price, image, categoryId} = createProductDTO;
 
         const product = new Product();
@@ -48,7 +32,7 @@ export class ProductService {
         product.categoryId = categoryId;
 
         const createdProduct = await this.productRepository.save(product);
-
-        return this.buildProduct(createdProduct);
+        
+        return new ProductView(createdProduct);
     }
 }

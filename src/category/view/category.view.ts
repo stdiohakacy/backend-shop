@@ -16,8 +16,4 @@ export default class CategoryView {
     static transformList(categories: Category[]): CategoryView[] {
         return categories.map(category => new CategoryView(category));
     }
-
-    static transformEntity(category: Category): CategoryView {
-        return new CategoryView(category);
-    }
 }
