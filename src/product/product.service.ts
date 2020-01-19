@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './product.entity';
 import { Repository, IsNull } from 'typeorm';
-import { IProductsData } from './product.interface';
+import { IProductsView } from './product.interface';
 import ProductView from './view/product.view';
 import DataHelper from 'src/helpers/DataHelper';
 
@@ -13,7 +13,7 @@ export class ProductService {
         private readonly productRepository: Repository<Product>,
     ) {}
 
-    async findProducts(): Promise<IProductsData> {
+    async findProducts(): Promise<IProductsView> {
         const [productsRepository, count] = await this.productRepository
             .findAndCount({
                 order: {createdAt: 'DESC'}, 

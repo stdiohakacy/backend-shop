@@ -1,5 +1,5 @@
 import { Controller, Get, Post, UsePipes, ValidationPipe, Body, Param, Put, Delete } from '@nestjs/common';
-import { IProductsData} from './product.interface';
+import { IProductsView} from './product.interface';
 import { ProductService } from './product.service';
 import { CreateProductDTO } from './dto/create-product.dto';
 import ProductView from './view/product.view';
@@ -9,7 +9,7 @@ export class ProductController {
     constructor(private readonly productService: ProductService) {}
 
     @Get()
-    async findProducts(): Promise<IProductsData> {
+    async findProducts(): Promise<IProductsView> {
         return await this.productService.findProducts();
     }
 

@@ -3,12 +3,12 @@ import { Category } from './category.entity';
 import { Injectable, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull } from 'typeorm';
-import { ICategoriesData } from './category.interface';
+import { ICategoriesView } from './category.interface';
 import CategoryView from './view/category.view';
 import DataHelper from 'src/helpers/DataHelper';
 import { Product } from 'src/product/product.entity';
 import ProductView from 'src/product/view/product.view';
-import { IProductsData } from 'src/product/product.interface';
+import { IProductsView } from 'src/product/product.interface';
 
 @Injectable()
 export class CategoryService {
@@ -19,7 +19,7 @@ export class CategoryService {
         private readonly productRepository: Repository<Product>,
     ) {}
 
-    async findCategories(): Promise<ICategoriesData> {
+    async findCategories(): Promise<ICategoriesView> {
         const [categoriesRepository, count] = await this.categoryRepository
             .findAndCount({
                 order: {createdAt: 'DESC'}, 
@@ -36,7 +36,7 @@ export class CategoryService {
         }
     }
 
-    async findProductsByCategory(id: number): Promise<IProductsData> {
+    async findProductsByCategory(id: number): Promise<IProductsView> {
         const category = await this.categoryRepository.findOne(id);
         if (category.deletedAt) {
             return null;

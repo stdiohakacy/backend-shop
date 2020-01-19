@@ -3,15 +3,15 @@ import { CategoryService } from './category.service';
 import { CreateCateDTO } from './dto/create-category.dto';
 import { ValidationPipe } from 'src/common/pipes/validation.pipe';
 import CategoryView from './view/category.view';
-import { ICategoriesData } from './category.interface';
-import { IProductsData } from 'src/product/product.interface';
+import { ICategoriesView } from './category.interface';
+import { IProductsView } from 'src/product/product.interface';
 
 @Controller('categories')
 export class CategoryController {
     constructor(private readonly categoryService: CategoryService) {}
 
     @Get()
-    async findCategories(): Promise<ICategoriesData> {
+    async findCategories(): Promise<ICategoriesView> {
         return await this.categoryService.findCategories();
     }
 
@@ -21,7 +21,7 @@ export class CategoryController {
     }
 
     @Get('/:id/products')
-    async findProductsByCategory(@Param() id: number): Promise<IProductsData> {
+    async findProductsByCategory(@Param() id: number): Promise<IProductsView> {
         return await this.categoryService.findProductsByCategory(id);
     }
 

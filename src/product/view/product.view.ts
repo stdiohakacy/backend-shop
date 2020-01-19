@@ -1,5 +1,4 @@
 import { Product } from './../product.entity';
-import CategoryReference from 'src/category/view/category.ref';
 
 export default class ProductView {
     id: number;
