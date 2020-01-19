@@ -5,7 +5,7 @@ import { ValidationPipe } from 'src/common/pipes/validation.pipe';
 import CategoryView from './view/category.view';
 import { ICategoriesResultObject } from './category.interface';
 
-@Controller('category')
+@Controller('categories')
 export class CategoryController {
     constructor(private readonly categoryService: CategoryService) {}
 
