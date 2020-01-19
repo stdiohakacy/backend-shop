@@ -4,7 +4,8 @@ import { Category } from './category.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull } from 'typeorm';
-import { ICategoryRO, ICategoriesRO } from './category.interface';
+import { ICategoriesResultObject, ICategoryResultObject } from './category.interface';
+import CategoryView from './view/category.view';
 
 @Injectable()
 export class CategoryService {
@@ -13,63 +14,46 @@ export class CategoryService {
         private readonly categoryRepository: Repository<Category>,
     ) {}
 
-    private buildCategory(category: Category) {
-        const buildedCategory = {
-            name: category.name,
-            createdAt: category.createdAt,
-            updatedAt: category.updatedAt,
-        };
-        return {category: buildedCategory};
-    }
-
-    private buildCategories(categories: Category[]) {
-        const builedCategories = [];
-        for (const category of categories) {
-            const data = this.buildCategory(category);
-            builedCategories.push(data);
-        }
-        return builedCategories;
-    }
-
-    async findCategories(): Promise<ICategoriesRO> {
-        const [categories, count] = await this.categoryRepository
+    async findCategories(): Promise<ICategoriesResultObject> {
+        const [categoriesRepository, count] = await this.categoryRepository
             .findAndCount({
                 order: {createdAt: 'DESC'}, 
                 where: {deletedAt: IsNull()}});
-        
-        const builedCategories = this.buildCategories(categories);
-        return {categories: builedCategories, count};
+
+        const categories = CategoryView.transformList(categoriesRepository);
+        return {categories, count};
     }
 
-    async findCategory(id: number): Promise<ICategoryRO> {
+    async findCategory(id: number): Promise<CategoryView> {
         const category = await this.categoryRepository.findOne(id);
-
-        const entity = new Category();
-        entity.name = category.name;
-        
-        return this.buildCategory(entity);
+        return new CategoryView(category);
     }
 
-    async createCategory(createCateDTO: CreateCateDTO): Promise<ICategoryRO> {
+    async createCategory(createCateDTO: CreateCateDTO): Promise<CategoryView> {
         const {name} = createCateDTO;
 
         const category = new Category();
         category.name = name;
 
         const createdCategory = await this.categoryRepository.save(category);
-        return this.buildCategory(createdCategory);
+        return new CategoryView(createdCategory);
     }
-    async updateCategory(id: number, updateCateDTO: UpdateCateDTO): Promise<ICategoryRO> {
+
+    async updateCategory(id: number, updateCateDTO: UpdateCateDTO): Promise<CategoryView> {
         const {name} = updateCateDTO;
+
         const category = await this.categoryRepository.findOne(id);
         category.name = name;
+        
         await this.categoryRepository.save(category);
-        return this.buildCategory(category);
+        return new CategoryView(category);
     }
 
     async deleteCategory(id: number): Promise<boolean> {
         const category = await this.categoryRepository.findOne(id);
+
         category.deletedAt = new Date();
+        
         await this.categoryRepository.save(category);
         return true;
     }
