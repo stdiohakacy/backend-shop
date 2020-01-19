@@ -6,9 +6,8 @@ export default class ProductView {
     name: string;
     price: number;
     image: string;
-    createdAt: Date;
+    createdAt?: Date;
     updatedAt?: Date;
-    category: CategoryReference;
 
     constructor(product: Product) {
         this.id = product.id;
@@ -17,7 +16,6 @@ export default class ProductView {
         this.image = product.image;
         this.createdAt = product.createdAt;
         this.updatedAt = product.updatedAt;
-        this.category = new CategoryReference(product.category);
     }
 
     static transformList(products: Product[]): ProductView[] {

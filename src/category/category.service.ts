@@ -1,20 +1,25 @@
 import { CreateCateDTO } from './dto/create-category.dto';
 import { Category } from './category.entity';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull } from 'typeorm';
-import { ICategoriesResultObject } from './category.interface';
+import { ICategoriesData } from './category.interface';
 import CategoryView from './view/category.view';
 import DataHelper from 'src/helpers/DataHelper';
+import { Product } from 'src/product/product.entity';
+import ProductView from 'src/product/view/product.view';
+import { IProductsData } from 'src/product/product.interface';
 
 @Injectable()
 export class CategoryService {
     constructor(
         @InjectRepository(Category)
         private readonly categoryRepository: Repository<Category>,
+        @InjectRepository(Product)
+        private readonly productRepository: Repository<Product>,
     ) {}
 
-    async findCategories(): Promise<ICategoriesResultObject> {
+    async findCategories(): Promise<ICategoriesData> {
         const [categoriesRepository, count] = await this.categoryRepository
             .findAndCount({
                 order: {createdAt: 'DESC'}, 
@@ -25,8 +30,26 @@ export class CategoryService {
     }
 
     async findCategory(id: number): Promise<CategoryView> {
-        const category = await this.categoryRepository.findOne(id, {where: {deletedAt: IsNull()}});
-        return new CategoryView(category);
+        const category = await this.categoryRepository.findOne(id);
+        if (!category.deletedAt) {
+            return new CategoryView(category);
+        }
+    }
+
+    async findProductsByCategory(id: number): Promise<IProductsData> {
+        const category = await this.categoryRepository.findOne(id);
+        if (category.deletedAt) {
+            return null;
+        }
+        
+        const [productsRepository, count] = await this.productRepository
+            .findAndCount({
+                order: {createdAt: 'DESC'}, 
+                where: {categoryId: id, deletedAt: IsNull()},
+            });
+
+        const products = ProductView.transformList(productsRepository);
+        return {products, count};
     }
 
     async createCategory(createCateDTO: CreateCateDTO): Promise<CategoryView> {

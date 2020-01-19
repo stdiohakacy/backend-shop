@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './product.entity';
 import { Repository, IsNull } from 'typeorm';
-import { IProductsResultObject } from './product.interface';
+import { IProductsData } from './product.interface';
 import ProductView from './view/product.view';
 import DataHelper from 'src/helpers/DataHelper';
 
@@ -13,7 +13,7 @@ export class ProductService {
         private readonly productRepository: Repository<Product>,
     ) {}
 
-    async findProducts(): Promise<IProductsResultObject> {
+    async findProducts(): Promise<IProductsData> {
         const [productsRepository, count] = await this.productRepository
             .findAndCount({
                 order: {createdAt: 'DESC'}, 
@@ -26,12 +26,11 @@ export class ProductService {
     }
 
     async findProduct(id: number): Promise<ProductView> {
-        const product = await this.productRepository
-            .findOne(id, {
-                relations: ['category'], 
-                where: {deletedAt: IsNull(),
-            }});
-        return new ProductView(product);
+        const product = await this.productRepository.findOne(id);
+
+        if (!product.deletedAt) {
+            return new ProductView(product);
+        }
     }
 
     async createProduct(createProductDTO: CreateProductDTO): Promise<ProductView> {
@@ -58,7 +57,6 @@ export class ProductService {
 
         DataHelper.filterDataInput(product, data, fields);
         await this.productRepository.update(id, product);
-
         return true;
     }
 

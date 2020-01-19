@@ -1,5 +1,5 @@
 import ProductView from './view/product.view';
-export interface IProductsResultObject {
+export interface IProductsData {
     products: ProductView[];
     count: number;
 }

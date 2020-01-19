@@ -3,20 +3,26 @@ import { CategoryService } from './category.service';
 import { CreateCateDTO } from './dto/create-category.dto';
 import { ValidationPipe } from 'src/common/pipes/validation.pipe';
 import CategoryView from './view/category.view';
-import { ICategoriesResultObject } from './category.interface';
+import { ICategoriesData } from './category.interface';
+import { IProductsData } from 'src/product/product.interface';
 
 @Controller('categories')
 export class CategoryController {
     constructor(private readonly categoryService: CategoryService) {}
 
     @Get()
-    async findCategories(): Promise<ICategoriesResultObject> {
+    async findCategories(): Promise<ICategoriesData> {
         return await this.categoryService.findCategories();
     }
 
     @Get('/:id')
     async findCategory(@Param() id: number): Promise<CategoryView> {
         return await this.categoryService.findCategory(id);
+    }
+
+    @Get('/:id/products')
+    async findProductsByCategory(@Param() id: number): Promise<IProductsData> {
+        return await this.categoryService.findProductsByCategory(id);
     }
 
     @UsePipes(new ValidationPipe())

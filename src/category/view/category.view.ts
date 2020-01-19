@@ -3,8 +3,8 @@ import { Category } from '../category.entity';
 export default class CategoryView {
     id: number;
     name: string;
-    createdAt: Date;
-    updatedAt;
+    createdAt?: Date;
+    updatedAt?: Date;
 
     constructor(category: Category) {
         this.id = category.id;

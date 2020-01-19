@@ -28,12 +28,12 @@ export class Product {
     @ManyToOne(type => Category, category => category.products)
     category: Category;
 
-    @Column({type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'})
-    createdAt: Date;
-
     @Column()
     @IsInt()
     categoryId: number;
+
+    @Column({type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'})
+    createdAt: Date;
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'})
     updatedAt: Date;

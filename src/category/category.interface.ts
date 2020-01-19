@@ -1,5 +1,5 @@
 import CategoryView from './view/category.view';
-export interface ICategoriesResultObject {
+export interface ICategoriesData {
     categories: CategoryView[];
     count: number;
 }
