@@ -28,7 +28,7 @@ export class CategoryController {
 
     @UsePipes(new ValidationPipe())
     @Put('/:id')
-    async updateCategory(@Param() id: number, @Body() updateCateDTO: UpdateCateDTO): Promise<CategoryView> {
+    async updateCategory(@Param() id: number, @Body() updateCateDTO: UpdateCateDTO): Promise<boolean> {
         return await this.categoryService.updateCategory(id, updateCateDTO);
     }
 

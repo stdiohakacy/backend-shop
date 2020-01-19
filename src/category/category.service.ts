@@ -25,7 +25,7 @@ export class CategoryService {
     }
 
     async findCategory(id: number): Promise<CategoryView> {
-        const category = await this.categoryRepository.findOne(id);
+        const category = await this.categoryRepository.findOne(id, {where: {deletedAt: IsNull()}});
         return new CategoryView(category);
     }
 
@@ -39,14 +39,15 @@ export class CategoryService {
         return new CategoryView(createdCategory);
     }
 
-    async updateCategory(id: number, updateCateDTO: UpdateCateDTO): Promise<CategoryView> {
+    async updateCategory(id: number, updateCateDTO: UpdateCateDTO): Promise<boolean> {
         const {name} = updateCateDTO;
 
         const category = await this.categoryRepository.findOne(id);
         category.name = name;
         
         await this.categoryRepository.save(category);
-        return new CategoryView(category);
+
+        return true;
     }
 
     async deleteCategory(id: number): Promise<boolean> {

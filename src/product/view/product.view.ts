@@ -1,5 +1,4 @@
 import { Product } from './../product.entity';
-import { Category } from 'src/category/category.entity';
 import CategoryReference from 'src/category/view/category.ref';
 
 export default class ProductView {
@@ -8,7 +7,8 @@ export default class ProductView {
     price: number;
     image: string;
     createdAt: Date;
-    updatedAt?: Date;category: CategoryReference;
+    updatedAt?: Date;
+    category: CategoryReference;
 
     constructor(product: Product) {
         this.id = product.id;
