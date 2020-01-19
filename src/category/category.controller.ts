@@ -2,7 +2,6 @@ import { Controller, Post, Body, Get, UsePipes, Param, Put, Delete } from '@nest
 import { CategoryService } from './category.service';
 import { CreateCateDTO } from './dto/create-category.dto';
 import { ValidationPipe } from 'src/common/pipes/validation.pipe';
-import { UpdateCateDTO } from './dto/update-category.dto';
 import CategoryView from './view/category.view';
 import { ICategoriesResultObject } from './category.interface';
 
@@ -28,8 +27,8 @@ export class CategoryController {
 
     @UsePipes(new ValidationPipe())
     @Put('/:id')
-    async updateCategory(@Param() id: number, @Body() updateCateDTO: UpdateCateDTO): Promise<boolean> {
-        return await this.categoryService.updateCategory(id, updateCateDTO);
+    async updateCategory(@Param() id: number, @Body() data: any): Promise<boolean> {
+        return await this.categoryService.updateCategory(id, data);
     }
 
     @Delete('/:id')

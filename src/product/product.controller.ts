@@ -3,7 +3,6 @@ import { IProductsResultObject} from './product.interface';
 import { ProductService } from './product.service';
 import { CreateProductDTO } from './dto/create-product.dto';
 import ProductView from './view/product.view';
-import { UpdateProductDTO } from './dto/update-product.dto';
 
 @Controller('product')
 export class ProductController {

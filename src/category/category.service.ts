@@ -1,4 +1,3 @@
-import { UpdateCateDTO } from './dto/update-category.dto';
 import { CreateCateDTO } from './dto/create-category.dto';
 import { Category } from './category.entity';
 import { Injectable } from '@nestjs/common';
@@ -6,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull } from 'typeorm';
 import { ICategoriesResultObject } from './category.interface';
 import CategoryView from './view/category.view';
+import DataHelper from 'src/helpers/DataHelper';
 
 @Injectable()
 export class CategoryService {
@@ -39,13 +39,15 @@ export class CategoryService {
         return new CategoryView(createdCategory);
     }
 
-    async updateCategory(id: number, updateCateDTO: UpdateCateDTO): Promise<boolean> {
-        const {name} = updateCateDTO;
+    async updateCategory(id: number, data: any): Promise<boolean> {
+        const product = await this.categoryRepository.findOne(id);
 
-        const category = await this.categoryRepository.findOne(id);
-        category.name = name;
-        
-        await this.categoryRepository.save(category);
+        const fields = [
+            'name',
+        ];
+
+        DataHelper.filterDataInput(product, data, fields);
+        await this.categoryRepository.update(id, product);
 
         return true;
     }
