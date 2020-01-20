@@ -1,14 +1,14 @@
 import { CreateCateDTO } from './dto/create-category.dto';
-import { Category } from './category.entity';
+import { Category } from '../../entities/category.entity';
 import { Injectable, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull } from 'typeorm';
 import { ICategoriesView } from './category.interface';
 import CategoryView from './view/category.view';
 import DataHelper from 'src/helpers/DataHelper';
-import { Product } from 'src/product/product.entity';
-import ProductView from 'src/product/view/product.view';
-import { IProductsView } from 'src/product/product.interface';
+import { Product } from 'src/entities/product.entity';
+import ProductView from 'src/module/product/view/product.view';
+import { IProductsView } from 'src/module/product/product.interface';
 
 @Injectable()
 export class CategoryService {

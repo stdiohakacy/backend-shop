@@ -1,16 +1,31 @@
-import { Controller, Get, Post, UsePipes, ValidationPipe, Body, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, UsePipes, ValidationPipe, Body, Param, Put, Delete, Request } from '@nestjs/common';
 import { IProductsView} from './product.interface';
 import { ProductService } from './product.service';
 import { CreateProductDTO } from './dto/create-product.dto';
 import ProductView from './view/product.view';
+import { Pagination } from '../pagination/pagination';
+import { Product } from 'src/entities/product.entity';
 
 @Controller('products')
 export class ProductController {
     constructor(private readonly productService: ProductService) {}
 
+    // @Get()
+    // async findProducts(): Promise<IProductsView> {
+    //     return await this.productService.findProducts();
+    // }
+
     @Get()
-    async findProducts(): Promise<IProductsView> {
-        return await this.productService.findProducts();
+    async findProducts(@Request() request): Promise<Pagination<Product>> {
+        return await this.productService.findProducts({
+            limit: request.query.hasOwnProperty('limit') ? request.query.limit : 10,
+            page: request.query.hasOwnProperty('page') ? request.query.page : 0,
+        });
+    }
+
+    @Get('/initial')
+    async initialProducts(): Promise<any> {
+        return await this.productService.initialProducts();
     }
 
     @Get('/:id')

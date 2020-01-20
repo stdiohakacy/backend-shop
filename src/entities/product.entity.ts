@@ -1,9 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, BaseEntity, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { IsString, IsNotEmpty, MaxLength, IsInt, Min, Max } from 'class-validator';
-import { Category } from 'src/category/category.entity';
+import { Category } from 'src/entities/category.entity';
 
 @Entity('product')
-export class Product {
+export class Product extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -32,10 +32,10 @@ export class Product {
     @IsInt()
     categoryId: number;
 
-    @Column({type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'})
+    @CreateDateColumn()
     createdAt: Date;
 
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'})
+    @UpdateDateColumn({nullable: true})
     updatedAt: Date;
 
     @Column({nullable: true, type: 'timestamp'})

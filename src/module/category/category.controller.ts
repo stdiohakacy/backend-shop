@@ -4,7 +4,7 @@ import { CreateCateDTO } from './dto/create-category.dto';
 import { ValidationPipe } from 'src/common/pipes/validation.pipe';
 import CategoryView from './view/category.view';
 import { ICategoriesView } from './category.interface';
-import { IProductsView } from 'src/product/product.interface';
+import { IProductsView } from 'src/module/product/product.interface';
 
 @Controller('categories')
 export class CategoryController {

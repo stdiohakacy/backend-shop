@@ -1,12 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, BaseEntity } from 'typeorm';
 import { IsString, IsNotEmpty, MaxLength } from 'class-validator';
-import { Product } from 'src/product/product.entity';
+import { Product } from 'src/entities/product.entity';
 
 @Entity('category')
 export class Category {
     @PrimaryGeneratedColumn()
     id: number;
-
+    
     @Column()
     @IsString()
     @IsNotEmpty()
@@ -15,7 +15,7 @@ export class Category {
 
     @OneToMany(type => Product, product => product.category)
     products: Product[];
-
+    
     @CreateDateColumn()
     createdAt: Date;
 
@@ -24,4 +24,5 @@ export class Category {
 
     @Column({nullable: true, type: 'timestamp'})
     deletedAt: Date;
+
 }

@@ -1,11 +1,14 @@
 import { CreateProductDTO } from './dto/create-product.dto';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Options } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Product } from './product.entity';
+import { Product } from '../../entities/product.entity';
 import { Repository, IsNull } from 'typeorm';
 import { IProductsView } from './product.interface';
 import ProductView from './view/product.view';
 import DataHelper from 'src/helpers/DataHelper';
+import * as faker from 'faker';
+import { Pagination } from '../pagination/pagination';
+import { IPaginationOptions } from '../pagination/pagination-options.interface';
 
 @Injectable()
 export class ProductService {
@@ -13,16 +16,39 @@ export class ProductService {
         private readonly productRepository: Repository<Product>,
     ) {}
 
-    async findProducts(): Promise<IProductsView> {
-        const [productsRepository, count] = await this.productRepository
-            .findAndCount({
-                order: {createdAt: 'DESC'}, 
-                where: {deletedAt: IsNull()}, 
-                relations: ['category'],
-            });
+    // async findProducts(): Promise<IProductsView> {
+    //     const [productsRepository, count] = await this.productRepository
+    //         .findAndCount({
+    //             order: {createdAt: 'DESC'}, 
+    //             where: {deletedAt: IsNull()}, 
+    //             relations: ['category'],
+    //         });
 
-        const products = ProductView.transformList(productsRepository);
-        return {products, count};
+    //     const products = ProductView.transformList(productsRepository);
+    //     return {products, count};
+    // }
+
+    async findProducts(options: IPaginationOptions): Promise<Pagination<Product>> {
+        const [results, total] = await this.productRepository.findAndCount({
+            order: {createdAt: 'DESC'},
+            where: {deletedAt: IsNull()},
+            take: options.limit,
+            skip: options.page,
+        });
+
+        return new Pagination<Product>({ results, total });
+    }
+    
+    async initialProducts(): Promise<any> {
+        for (let index = 0; index < 50; index++) {
+            const fakerInstance = {
+                name: faker.commerce.productName(),
+                price: Math.floor(Math.random() * 10000000) + 1000, 
+                image: faker.image.imageUrl(), 
+                categoryId: 1,
+            };
+            this.createProduct(fakerInstance);
+        }
     }
 
     async findProduct(id: number): Promise<ProductView> {
