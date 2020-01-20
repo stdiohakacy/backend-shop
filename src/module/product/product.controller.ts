@@ -26,13 +26,11 @@ export class ProductController {
         return await this.productService.findProduct(id);
     }
 
-    @UsePipes(new ValidationPipe())
     @Post()
     async createProduct(@Body() createProductDTO: CreateProductDTO): Promise<ProductView> {
         return await this.productService.createProduct(createProductDTO);
     }
 
-    @UsePipes(new ValidationPipe())
     @Put('/:id')
     async updateProduct(@Param() id: number, @Body() data: any): Promise<boolean> {
         return await this.productService.updateProduct(id, data);

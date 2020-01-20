@@ -29,13 +29,11 @@ export class CategoryController {
         });
     }
 
-    @UsePipes(new ValidationPipe())
     @Post()
     async createCategory(@Body() createCateDTO: CreateCateDTO): Promise<CategoryView> {
         return await this.categoryService.createCategory(createCateDTO);
     }
 
-    @UsePipes(new ValidationPipe())
     @Put('/:id')
     async updateCategory(@Param() id: number, @Body() data: any): Promise<boolean> {
         return await this.categoryService.updateCategory(id, data);
