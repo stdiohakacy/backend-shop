@@ -28,15 +28,15 @@ export class ProductService {
     //     return {products, count};
     // }
 
-    async findProducts(options: IPaginationOptions): Promise<Pagination<Product>> {
-        const [results, total] = await this.productRepository.findAndCount({
+    async findProducts(options: IPaginationOptions): Promise<Pagination<ProductView>> {
+        const [products, total] = await this.productRepository.findAndCount({
             order: {createdAt: 'DESC'},
             where: {deletedAt: IsNull()},
             take: options.limit,
-            skip: options.page,
+            skip: options.page * options.limit,
         });
-
-        return new Pagination<Product>({ results, total });
+        const data = ProductView.transformList(products);
+        return new Pagination<ProductView>({ data, total });
     }
     
     async initialProducts(): Promise<any> {
