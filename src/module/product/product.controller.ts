@@ -9,7 +9,7 @@ export class ProductController {
     constructor(private readonly productService: ProductService) {}
 
     @Get()
-    async findProducts(@Request() request): Promise<Pagination<ProductView>> {
+    async findProducts(@Request() request: any): Promise<Pagination<ProductView>> {
         return await this.productService.findProducts({
             limit: request.query.hasOwnProperty('limit') ? request.query.limit : 10,
             page: request.query.hasOwnProperty('page') ? request.query.page : 0,

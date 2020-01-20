@@ -8,7 +8,8 @@ import CategoryView from './view/category.view';
 import DataHelper from 'src/helpers/DataHelper';
 import { Product } from 'src/entities/product.entity';
 import ProductView from 'src/module/product/view/product.view';
-import { IProductsView } from 'src/module/product/product.interface';
+import { IPaginationOptions } from '../pagination/pagination-options.interface';
+import { Pagination } from '../pagination/pagination';
 
 @Injectable()
 export class CategoryService {
@@ -36,20 +37,21 @@ export class CategoryService {
         }
     }
 
-    async findProductsByCategory(id: number): Promise<IProductsView> {
+    async findProductsByCategory(id: number, options: IPaginationOptions): Promise<Pagination<ProductView>> {
         const category = await this.categoryRepository.findOne(id);
-        if (category.deletedAt) {
-            return null;
-        }
-        
-        const [productsRepository, count] = await this.productRepository
-            .findAndCount({
-                order: {createdAt: 'DESC'}, 
-                where: {categoryId: id, deletedAt: IsNull()},
-            });
 
-        const products = ProductView.transformList(productsRepository);
-        return {products, count};
+        if (!category.deletedAt) {
+            const [products, total] = await this.productRepository.findAndCount({
+                order: {createdAt: 'DESC'},
+                where: {deletedAt: IsNull(), categoryId: id},
+                take: options.limit,
+                skip: options.page * options.limit,
+            });
+    
+            const data = ProductView.transformList(products);
+    
+            return new Pagination<ProductView>({ data, total });
+        }
     }
 
     async createCategory(createCateDTO: CreateCateDTO): Promise<CategoryView> {
