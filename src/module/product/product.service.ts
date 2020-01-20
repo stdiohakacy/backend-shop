@@ -3,7 +3,6 @@ import { Injectable, Options } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from '../../entities/product.entity';
 import { Repository, IsNull } from 'typeorm';
-import { IProductsView } from './product.interface';
 import ProductView from './view/product.view';
 import DataHelper from 'src/helpers/DataHelper';
 import * as faker from 'faker';
@@ -16,18 +15,6 @@ export class ProductService {
         private readonly productRepository: Repository<Product>,
     ) {}
 
-    // async findProducts(): Promise<IProductsView> {
-    //     const [productsRepository, count] = await this.productRepository
-    //         .findAndCount({
-    //             order: {createdAt: 'DESC'}, 
-    //             where: {deletedAt: IsNull()}, 
-    //             relations: ['category'],
-    //         });
-
-    //     const products = ProductView.transformList(productsRepository);
-    //     return {products, count};
-    // }
-
     async findProducts(options: IPaginationOptions): Promise<Pagination<ProductView>> {
         const [products, total] = await this.productRepository.findAndCount({
             order: {createdAt: 'DESC'},
@@ -35,7 +22,9 @@ export class ProductService {
             take: options.limit,
             skip: options.page * options.limit,
         });
+
         const data = ProductView.transformList(products);
+
         return new Pagination<ProductView>({ data, total });
     }
     
