@@ -1,8 +1,8 @@
 import { CreateCateDTO } from './dto/create-category.dto';
 import { Category } from '../../entities/category.entity';
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException, InternalServerErrorException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, IsNull } from 'typeorm';
+import { Repository, IsNull, getRepository } from 'typeorm';
 import { ICategoriesView } from './category.interface';
 import CategoryView from './view/category.view';
 import DataHelper from 'src/helpers/DataHelper';
@@ -21,37 +21,57 @@ export class CategoryService {
     ) {}
 
     async findCategories(): Promise<ICategoriesView> {
-        const [categoriesRepository, count] = await this.categoryRepository
+        const [results, count] = await this.categoryRepository
             .findAndCount({
                 order: {createdAt: 'DESC'}, 
                 where: {deletedAt: IsNull()}});
 
-        const categories = CategoryView.transformList(categoriesRepository);
+        if (!results) {
+            throw new NotFoundException();
+        }
+
+        const categories = CategoryView.transformList(results);
         return {categories, count};
     }
 
     async findCategory(id: number): Promise<CategoryView> {
-        const category = await this.categoryRepository.findOne(id);
-        if (!category.deletedAt) {
-            return new CategoryView(category);
+        const category = await getRepository(Category)
+            .createQueryBuilder('category')
+            .whereInIds([id])
+            .andWhere('category.deletedAt IS NULL')
+            .getOne();
+
+        if (!category) {
+            throw new NotFoundException();
         }
+
+        return new CategoryView(category);
     }
 
     async findProductsByCategory(id: number, options: IPaginationOptions): Promise<Pagination<ProductView>> {
-        const category = await this.categoryRepository.findOne(id);
+        const category = await getRepository(Category)
+            .createQueryBuilder('category')
+            .whereInIds([id])
+            .andWhere('category.deletedAt IS NULL')
+            .getOne();
 
-        if (!category.deletedAt) {
-            const [products, total] = await this.productRepository.findAndCount({
-                order: {createdAt: 'DESC'},
-                where: {deletedAt: IsNull(), categoryId: id},
-                take: options.limit,
-                skip: options.page * options.limit,
-            });
-    
-            const data = ProductView.transformList(products);
-    
-            return new Pagination<ProductView>({ data, total });
+        if (!category) {
+            throw new NotFoundException();
         }
+
+        const [products, total] = await this.productRepository.findAndCount({
+            order: {createdAt: 'DESC'},
+            where: {deletedAt: IsNull(), categoryId: id},
+            take: options.limit,
+            skip: options.page * options.limit,
+        });
+
+        if (!products) {
+            throw new NotFoundException();
+        }
+
+        const data = ProductView.transformList(products);
+        return new Pagination<ProductView>({ data, total });
     }
 
     async createCategory(createCateDTO: CreateCateDTO): Promise<CategoryView> {
@@ -61,6 +81,10 @@ export class CategoryService {
         category.name = name;
 
         const createdCategory = await this.categoryRepository.save(category);
+        
+        if (!createdCategory) {
+            throw new UnprocessableEntityException();
+        }
         return new CategoryView(createdCategory);
     }
 
@@ -72,8 +96,10 @@ export class CategoryService {
         ];
 
         DataHelper.filterDataInput(product, data, fields);
-        await this.categoryRepository.update(id, product);
-
+        const updatedCategory = await this.categoryRepository.update(id, product);
+        if (!updatedCategory) {
+            throw new UnprocessableEntityException();
+        }
         return true;
     }
 
@@ -82,7 +108,10 @@ export class CategoryService {
 
         category.deletedAt = new Date();
         
-        await this.categoryRepository.save(category);
+        const deletedCategory = await this.categoryRepository.save(category);
+        if (!deletedCategory) {
+            throw new UnprocessableEntityException();
+        }
         return true;
     }
 }

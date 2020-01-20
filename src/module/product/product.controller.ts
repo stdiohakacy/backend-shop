@@ -1,4 +1,4 @@
-import { Controller, Get, Post, UsePipes, ValidationPipe, Body, Param, Put, Delete, Request } from '@nestjs/common';
+import { Controller, Get, Post, UsePipes, ValidationPipe, Body, Param, Put, Delete, Request, NotFoundException } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDTO } from './dto/create-product.dto';
 import ProductView from './view/product.view';
@@ -29,7 +29,7 @@ export class ProductController {
     @UsePipes(new ValidationPipe())
     @Post()
     async createProduct(@Body() createProductDTO: CreateProductDTO): Promise<ProductView> {
-        return this.productService.createProduct(createProductDTO);
+        return await this.productService.createProduct(createProductDTO);
     }
 
     @UsePipes(new ValidationPipe())

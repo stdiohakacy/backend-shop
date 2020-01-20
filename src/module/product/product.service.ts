@@ -1,8 +1,8 @@
 import { CreateProductDTO } from './dto/create-product.dto';
-import { Injectable, Options } from '@nestjs/common';
+import { Injectable, Options, NotFoundException, InternalServerErrorException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from '../../entities/product.entity';
-import { Repository, IsNull } from 'typeorm';
+import { Repository, IsNull, getRepository } from 'typeorm';
 import ProductView from './view/product.view';
 import DataHelper from 'src/helpers/DataHelper';
 import * as faker from 'faker';
@@ -23,6 +23,10 @@ export class ProductService {
             skip: options.page * options.limit,
         });
 
+        if (!products) {
+            throw new NotFoundException();
+        }
+
         const data = ProductView.transformList(products);
 
         return new Pagination<ProductView>({ data, total });
@@ -41,11 +45,17 @@ export class ProductService {
     }
 
     async findProduct(id: number): Promise<ProductView> {
-        const product = await this.productRepository.findOne(id);
+        const product = await getRepository(Product)
+            .createQueryBuilder('product')
+            .whereInIds([id])
+            .andWhere('product.deletedAt IS NULL')
+            .getOne();
 
-        if (!product.deletedAt) {
-            return new ProductView(product);
+        if (!product) {
+            throw new NotFoundException();
         }
+
+        return new ProductView(product);
     }
 
     async createProduct(createProductDTO: CreateProductDTO): Promise<ProductView> {
@@ -58,11 +68,19 @@ export class ProductService {
         product.categoryId = categoryId;
 
         const createdProduct = await this.productRepository.save(product);
+
+        if (!createdProduct) {
+            throw new UnprocessableEntityException();
+        }
         return new ProductView(createdProduct);
     }
 
     async updateProduct(id: number, data: any): Promise<boolean> {
         const product = await this.productRepository.findOne(id);
+
+        if (!product) {
+            throw new NotFoundException();
+        }
 
         const fields = [
             'name',
@@ -71,16 +89,25 @@ export class ProductService {
         ];
 
         DataHelper.filterDataInput(product, data, fields);
-        await this.productRepository.update(id, product);
+        const updatedProduct = await this.productRepository.update(id, product);
+
+        if (!updatedProduct) {
+            throw new UnprocessableEntityException();
+        }
         return true;
     }
 
     async deleteProduct(id: number): Promise<boolean> {
         const product = await this.productRepository.findOne(id);
-
-        product.deletedAt = new Date();
+        if (!product) {
+            throw new NotFoundException();
+        }
         
-        await this.productRepository.save(product);
+        product.deletedAt = new Date();
+        const deletedProduct = await this.productRepository.save(product);
+        if (!deletedProduct) {
+            throw new UnprocessableEntityException();
+        }
         return true;
     }
 }
