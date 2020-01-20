@@ -1,5 +1,5 @@
 import { CreateProductDTO } from './dto/create-product.dto';
-import { Injectable, Options, NotFoundException, InternalServerErrorException, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from '../../entities/product.entity';
 import { Repository, IsNull, getRepository } from 'typeorm';
@@ -33,7 +33,7 @@ export class ProductService {
     }
     
     async initialProducts(): Promise<any> {
-        for (let index = 0; index < 50; index++) {
+        for (let index = 0; index < 10000; index++) {
             const fakerInstance = {
                 name: faker.commerce.productName(),
                 price: Math.floor(Math.random() * 10000000) + 1000, 

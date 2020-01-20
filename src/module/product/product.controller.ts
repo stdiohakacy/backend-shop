@@ -1,4 +1,4 @@
-import { Controller, Get, Post, UsePipes, ValidationPipe, Body, Param, Put, Delete, Request, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, Request, NotFoundException, Response, HttpStatus, UseInterceptors, CacheInterceptor } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDTO } from './dto/create-product.dto';
 import ProductView from './view/product.view';
@@ -9,9 +9,10 @@ export class ProductController {
     constructor(private readonly productService: ProductService) {}
 
     @Get()
+    @UseInterceptors(CacheInterceptor)
     async findProducts(@Request() request: any): Promise<Pagination<ProductView>> {
         return await this.productService.findProducts({
-            limit: request.query.hasOwnProperty('limit') ? request.query.limit : 10,
+            limit: request.query.hasOwnProperty('limit') ? request.query.limit : 10000,
             page: request.query.hasOwnProperty('page') ? request.query.page : 0,
         });
     }

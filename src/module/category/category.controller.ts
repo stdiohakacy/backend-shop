@@ -1,7 +1,6 @@
-import { Controller, Post, Body, Get, UsePipes, Param, Put, Delete, Request } from '@nestjs/common';
+import { Controller, Post, Body, Get, UsePipes, Param, Put, Delete, Request, UseInterceptors, CacheInterceptor } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCateDTO } from './dto/create-category.dto';
-import { ValidationPipe } from 'src/common/pipes/validation.pipe';
 import CategoryView from './view/category.view';
 import { ICategoriesView } from './category.interface';
 import { Pagination } from '../pagination/pagination';
@@ -16,12 +15,18 @@ export class CategoryController {
         return await this.categoryService.findCategories();
     }
 
+    @Get('/initial')
+    async initialProducts(): Promise<any> {
+        return await this.categoryService.initialCategories();
+    }
+
     @Get('/:id')
     async findCategory(@Param() id: number): Promise<CategoryView> {
         return await this.categoryService.findCategory(id);
     }
 
     @Get('/:id/products')
+    @UseInterceptors(CacheInterceptor)
     async findProductsByCategory(@Param() id: number, @Request() request: any): Promise<Pagination<ProductView>> {
         return await this.categoryService.findProductsByCategory(id, {
             limit: request.query.hasOwnProperty('limit') ? request.query.limit : 10,

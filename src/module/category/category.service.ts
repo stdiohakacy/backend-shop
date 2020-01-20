@@ -1,6 +1,6 @@
 import { CreateCateDTO } from './dto/create-category.dto';
 import { Category } from '../../entities/category.entity';
-import { Injectable, Inject, NotFoundException, InternalServerErrorException, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull, getRepository } from 'typeorm';
 import { ICategoriesView } from './category.interface';
@@ -10,6 +10,7 @@ import { Product } from 'src/entities/product.entity';
 import ProductView from 'src/module/product/view/product.view';
 import { IPaginationOptions } from '../pagination/pagination-options.interface';
 import { Pagination } from '../pagination/pagination';
+import * as faker from 'faker';
 
 @Injectable()
 export class CategoryService {
@@ -32,6 +33,15 @@ export class CategoryService {
 
         const categories = CategoryView.transformList(results);
         return {categories, count};
+    }
+
+    async initialCategories(): Promise<any> {
+        for (let index = 0; index < 2; index++) {
+            const fakerInstance = {
+                name: faker.commerce.productName(),
+            };
+            this.createCategory(fakerInstance);
+        }
     }
 
     async findCategory(id: number): Promise<CategoryView> {
