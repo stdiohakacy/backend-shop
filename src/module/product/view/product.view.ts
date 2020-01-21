@@ -17,7 +17,7 @@ export default class ProductView {
         this.updatedAt = product.updatedAt;
     }
 
-    static transformList(products: Product[]): ProductView[] {
+    static transform(products: Product[]): ProductView[] {
         return products.map(product => new ProductView(product));
     }
 }

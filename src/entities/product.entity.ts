@@ -1,11 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, BaseEntity, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, BaseEntity, CreateDateColumn, UpdateDateColumn, JoinColumn, Unique } from 'typeorm';
 import { IsString, IsNotEmpty, MaxLength, IsInt, Min, Max } from 'class-validator';
 import { Category } from 'src/entities/category.entity';
 
 @Entity('product')
-export class Product extends BaseEntity {
+@Unique(['name'])
+export class Product {
     @PrimaryGeneratedColumn()
-    id: number;
+    readonly id: number;
 
     @Column()
     @IsString()
@@ -26,9 +27,9 @@ export class Product extends BaseEntity {
     image: string;
 
     @ManyToOne(type => Category, category => category.products)
+    @JoinColumn({referencedColumnName: 'id'})
     category: Category;
 
-    @Column()
     @IsInt()
     categoryId: number;
 

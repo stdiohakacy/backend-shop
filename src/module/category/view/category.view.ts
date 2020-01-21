@@ -13,7 +13,7 @@ export default class CategoryView {
         this.updatedAt = category.updatedAt;
     }
 
-    static transformList(categories: Category[]): CategoryView[] {
+    static transform(categories: Category[]): CategoryView[] {
         return categories.map(category => new CategoryView(category));
     }
 }

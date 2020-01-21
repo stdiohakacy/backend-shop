@@ -1,8 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, BaseEntity } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, Unique } from 'typeorm';
 import { IsString, IsNotEmpty, MaxLength } from 'class-validator';
 import { Product } from 'src/entities/product.entity';
 
 @Entity('category')
+@Unique(['name'])
 export class Category {
     @PrimaryGeneratedColumn()
     id: number;
@@ -24,5 +25,4 @@ export class Category {
 
     @Column({nullable: true, type: 'timestamp'})
     deletedAt: Date;
-
 }

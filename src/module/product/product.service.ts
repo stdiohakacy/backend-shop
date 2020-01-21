@@ -27,7 +27,7 @@ export class ProductService {
                 throw new NotFoundException();
             }
     
-            const data = ProductView.transformList(products);
+            const data = ProductView.transform(products);
             return new Pagination<ProductView>({ data, total });
     }
     

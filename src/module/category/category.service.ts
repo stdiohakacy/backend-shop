@@ -31,7 +31,7 @@ export class CategoryService {
             throw new NotFoundException();
         }
 
-        const categories = CategoryView.transformList(results);
+        const categories = CategoryView.transform(results);
         return {categories, count};
     }
 
@@ -80,7 +80,7 @@ export class CategoryService {
             throw new NotFoundException();
         }
 
-        const data = ProductView.transformList(products);
+        const data = ProductView.transform(products);
         return new Pagination<ProductView>({ data, total });
     }
 
