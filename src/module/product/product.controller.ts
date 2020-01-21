@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, Request, NotFoundException, Response, HttpStatus, UseInterceptors, CacheInterceptor } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, Request, CacheInterceptor, UseInterceptors, CacheKey, CacheTTL} from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDTO } from './dto/create-product.dto';
 import ProductView from './view/product.view';
@@ -10,6 +10,8 @@ export class ProductController {
 
     @Get()
     @UseInterceptors(CacheInterceptor)
+    @CacheKey('products')
+    @CacheTTL(3600)
     async findProducts(@Request() request: any): Promise<Pagination<ProductView>> {
         return await this.productService.findProducts({
             limit: request.query.hasOwnProperty('limit') ? request.query.limit : 10000,

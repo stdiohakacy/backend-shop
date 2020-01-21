@@ -1,35 +1,34 @@
 import { CreateProductDTO } from './dto/create-product.dto';
-import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException, Inject, CACHE_MANAGER, InternalServerErrorException, CacheModule} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from '../../entities/product.entity';
 import { Repository, IsNull, getRepository } from 'typeorm';
 import ProductView from './view/product.view';
 import DataHelper from 'src/helpers/DataHelper';
-import * as faker from 'faker';
 import { Pagination } from '../pagination/pagination';
 import { IPaginationOptions } from '../pagination/pagination-options.interface';
-
+import * as faker from 'faker';
 @Injectable()
 export class ProductService {
-    constructor(@InjectRepository(Product)
+    constructor(
+        @InjectRepository(Product)
         private readonly productRepository: Repository<Product>,
     ) {}
 
     async findProducts(options: IPaginationOptions): Promise<Pagination<ProductView>> {
-        const [products, total] = await this.productRepository.findAndCount({
-            order: {createdAt: 'DESC'},
-            where: {deletedAt: IsNull()},
-            take: options.limit,
-            skip: options.page * options.limit,
-        });
-
-        if (!products) {
-            throw new NotFoundException();
-        }
-
-        const data = ProductView.transformList(products);
-
-        return new Pagination<ProductView>({ data, total });
+            const [products, total] = await this.productRepository.findAndCount({
+                order: {createdAt: 'DESC'},
+                where: {deletedAt: IsNull()},
+                take: options.limit,
+                skip: options.page * options.limit,
+            });
+    
+            if (!products) {
+                throw new NotFoundException();
+            }
+    
+            const data = ProductView.transformList(products);
+            return new Pagination<ProductView>({ data, total });
     }
     
     async initialProducts(): Promise<any> {
