@@ -2,10 +2,11 @@ import { Module, CacheModule, DynamicModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CategoryModule } from './module/category/category.module';
-import {TypeOrmModule} from '@nestjs/typeorm';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 import { ProductModule } from './module/product/product.module';
 import { PaginationModule } from './module/pagination/pagination.module';
+import { ConfigModule } from '@nestjs/config';
 import * as ormconfig from './ormconfig';
 
 export function DatabaseOrmModule(): DynamicModule {
@@ -16,6 +17,7 @@ export function DatabaseOrmModule(): DynamicModule {
 
 @Module({
     imports: [
+        ConfigModule.forRoot(),
         TypeOrmModule.forRoot(ormconfig), 
         CategoryModule, 
         ProductModule, 

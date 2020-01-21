@@ -1,5 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, BaseEntity, CreateDateColumn, UpdateDateColumn, JoinColumn, Unique } from 'typeorm';
-import { IsString, IsNotEmpty, MaxLength, IsInt, Min, Max } from 'class-validator';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, JoinColumn, Unique } from 'typeorm';
+import { IsString, IsNotEmpty, MaxLength, IsInt, Min, Max, IsDate } from 'class-validator';
 import { Category } from 'src/entities/category.entity';
 
 @Entity('product')
@@ -34,11 +34,14 @@ export class Product {
     categoryId: number;
 
     @CreateDateColumn()
+    @IsDate()
     createdAt: Date;
 
     @UpdateDateColumn({nullable: true})
+    @IsDate()
     updatedAt: Date;
 
     @Column({nullable: true, type: 'timestamp'})
+    @IsDate()
     deletedAt: Date;
 }

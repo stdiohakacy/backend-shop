@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, Unique } from 'typeorm';
-import { IsString, IsNotEmpty, MaxLength } from 'class-validator';
+import { IsString, IsNotEmpty, MaxLength, IsDate } from 'class-validator';
 import { Product } from 'src/entities/product.entity';
 
 @Entity('category')
@@ -18,11 +18,14 @@ export class Category {
     products: Product[];
     
     @CreateDateColumn()
+    @IsDate()
     createdAt: Date;
 
     @UpdateDateColumn({nullable: true})
+    @IsDate()
     updatedAt: Date;
 
     @Column({nullable: true, type: 'timestamp'})
+    @IsDate()
     deletedAt: Date;
 }
