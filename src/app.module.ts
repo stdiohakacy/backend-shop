@@ -7,7 +7,7 @@ import { Connection } from 'typeorm';
 import { ProductModule } from './module/product/product.module';
 import { PaginationModule } from './module/pagination/pagination.module';
 import { ConfigModule } from '@nestjs/config';
-import { UserModule } from './module/user/user.module';
+// import { UserModule } from './module/user/user.module';
 import * as ormconfig from './ormconfig';
 
 export function DatabaseOrmModule(): DynamicModule {
@@ -22,7 +22,9 @@ export function DatabaseOrmModule(): DynamicModule {
         TypeOrmModule.forRoot(ormconfig), 
         CategoryModule, 
         ProductModule, 
-        PaginationModule, UserModule],
+        PaginationModule, 
+        // UserModule,
+    ],
     controllers: [AppController],
     providers: [AppService],
 })

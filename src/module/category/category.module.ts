@@ -7,7 +7,7 @@ import { Product } from 'src/entities/product.entity';
 
 @Module({
     imports: [
-        CacheModule.register(), 
+        CacheModule.register(),
         TypeOrmModule.forFeature([Category, Product]),
     ],
     controllers: [CategoryController],

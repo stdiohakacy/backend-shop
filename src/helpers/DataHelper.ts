@@ -1,3 +1,5 @@
+import { Validator } from 'class-validator';
+
 export default class DataHelper {
     static filterDataInput<T>(entity: T, data: any, fields?: string[]): T {
         if (entity && typeof entity === 'object' && data && typeof data === 'object' && fields && Array.isArray(fields)) {

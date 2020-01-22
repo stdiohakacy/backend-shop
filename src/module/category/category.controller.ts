@@ -15,17 +15,17 @@ export class CategoryController {
         return await this.categoryService.findCategories();
     }
 
-    @Get('/initial')
+    @Get('initial')
     async initialProducts(): Promise<any> {
         return await this.categoryService.initialCategories();
     }
 
-    @Get('/:id')
-    async findCategory(@Param() id: number): Promise<CategoryView> {
+    @Get(':id')
+    async findCategory(@Param('id') id: number): Promise<CategoryView> {
         return await this.categoryService.findCategory(id);
     }
 
-    @Get('/:id/products')
+    @Get(':id/products')
     @UseInterceptors(CacheInterceptor)
     async findProductsByCategory(@Param() id: number, @Request() request: any): Promise<Pagination<ProductView>> {
         return await this.categoryService.findProductsByCategory(id, {
@@ -39,12 +39,12 @@ export class CategoryController {
         return await this.categoryService.createCategory(createCateDTO);
     }
 
-    @Put('/:id')
+    @Put(':id')
     async updateCategory(@Param() id: number, @Body() data: any): Promise<boolean> {
         return await this.categoryService.updateCategory(id, data);
     }
 
-    @Delete('/:id')
+    @Delete(':id')
     async deleteCategory(@Param() id: number): Promise<boolean> {
         return await this.categoryService.deleteCategory(id);
     }

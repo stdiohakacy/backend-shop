@@ -11,6 +11,7 @@ import ProductView from 'src/module/product/view/product.view';
 import { IPaginationOptions } from '../pagination/pagination-options.interface';
 import { Pagination } from '../pagination/pagination';
 import * as faker from 'faker';
+import { ValidationError } from 'src/common/error/ValidationError';
 
 @Injectable()
 export class CategoryService {
