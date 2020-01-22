@@ -1,6 +1,6 @@
 import { CreateCateDTO } from './dto/create-category.dto';
 import { Category } from '../../entities/category.entity';
-import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull, getRepository } from 'typeorm';
 import { ICategoriesView } from './category.interface';
@@ -11,7 +11,6 @@ import ProductView from 'src/module/product/view/product.view';
 import { IPaginationOptions } from '../pagination/pagination-options.interface';
 import { Pagination } from '../pagination/pagination';
 import * as faker from 'faker';
-import { ValidationError } from 'src/common/error/ValidationError';
 
 @Injectable()
 export class CategoryService {
@@ -86,11 +85,19 @@ export class CategoryService {
     }
 
     async createCategory(createCateDTO: CreateCateDTO): Promise<CategoryView> {
-        const createdCategory = await this.categoryRepository.save(createCateDTO);
-        
+        const findedCategory = this.categoryRepository.findOne({where: createCateDTO.name});
+        if (findedCategory) {
+            throw new ConflictException();
+        }
+
+        const category = new Category();
+        category.name = createCateDTO.name;
+
+        const createdCategory = await this.categoryRepository.save(category);
         if (!createdCategory) {
             throw new UnprocessableEntityException();
         }
+
         return new CategoryView(createdCategory);
     }
 

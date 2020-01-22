@@ -1,5 +1,5 @@
 import { CreateProductDTO } from './dto/create-product.dto';
-import { Injectable, NotFoundException, UnprocessableEntityException, Inject, CACHE_MANAGER, InternalServerErrorException, CacheModule} from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException, Inject, CACHE_MANAGER, InternalServerErrorException, CacheModule, ConflictException} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from '../../entities/product.entity';
 import { Repository, IsNull, getRepository } from 'typeorm';
@@ -58,6 +58,16 @@ export class ProductService {
     }
 
     async createProduct(createProductDTO: CreateProductDTO): Promise<ProductView> {
+        const findedProduct = this.productRepository.findOne({where: createProductDTO.name});
+        if (findedProduct) {
+            throw new ConflictException();
+        }
+
+        const product = new Product();
+        product.name = createProductDTO.name;
+        product.price = createProductDTO.price;
+        product.image = createProductDTO.image;
+        product.categoryId = createProductDTO.categoryId;
 
         const createdProduct = await this.productRepository.save(createProductDTO);
 
