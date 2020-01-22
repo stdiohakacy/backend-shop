@@ -85,12 +85,7 @@ export class CategoryService {
     }
 
     async createCategory(createCateDTO: CreateCateDTO): Promise<CategoryView> {
-        const {name} = createCateDTO;
-
-        const category = new Category();
-        category.name = name;
-
-        const createdCategory = await this.categoryRepository.save(category);
+        const createdCategory = await this.categoryRepository.save(createCateDTO);
         
         if (!createdCategory) {
             throw new UnprocessableEntityException();

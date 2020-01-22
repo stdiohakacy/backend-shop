@@ -58,15 +58,8 @@ export class ProductService {
     }
 
     async createProduct(createProductDTO: CreateProductDTO): Promise<ProductView> {
-        const {name, price, image, categoryId} = createProductDTO;
 
-        const product = new Product();
-        product.name = name;
-        product.price = price;
-        product.image = image;
-        product.categoryId = categoryId;
-
-        const createdProduct = await this.productRepository.save(product);
+        const createdProduct = await this.productRepository.save(createProductDTO);
 
         if (!createdProduct) {
             throw new UnprocessableEntityException();
