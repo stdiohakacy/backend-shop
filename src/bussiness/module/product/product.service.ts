@@ -8,8 +8,9 @@ import { Pagination } from '../pagination/pagination';
 import { IPaginationOptions } from '../pagination/pagination-options.interface';
 import { Product } from 'src/bussiness/entities/product.entity';
 import * as faker from 'faker';
+import { IProductService } from 'src/bussiness/services/IProductService';
 @Injectable()
-export class ProductService {
+export class ProductService implements IProductService {
     constructor(
         @InjectRepository(Product)
         private readonly productRepository: Repository<Product>,

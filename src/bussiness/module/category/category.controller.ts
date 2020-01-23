@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, UsePipes, Param, Put, Delete, Request, UseInterceptors, CacheInterceptor } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Put, Delete, Request, UseInterceptors, CacheInterceptor, Query } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCateDTO } from './dto/create-category.dto';
 import CategoryView from './view/category.view';
@@ -27,10 +27,10 @@ export class CategoryController {
 
     @Get(':id/products')
     @UseInterceptors(CacheInterceptor)
-    async findProductsByCategory(@Param() id: number, @Request() request: any): Promise<Pagination<ProductView>> {
+    async findProductsByCategory(@Param() id: number, @Query('limit') limit: number, @Query('page') page: number): Promise<Pagination<ProductView>> {
         return await this.categoryService.findProductsByCategory(id, {
-            limit: request.query.hasOwnProperty('limit') ? request.query.limit : 10,
-            page: request.query.hasOwnProperty('page') ? request.query.page : 0,
+            limit: limit ? limit : 10000,
+            page: page ? page : 0,
         });
     }
 

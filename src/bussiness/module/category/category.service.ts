@@ -11,9 +11,10 @@ import { Pagination } from '../pagination/pagination';
 import * as faker from 'faker';
 import { Category } from 'src/bussiness/entities/category.entity';
 import ProductView from '../product/view/product.view';
+import { ICategoryService } from 'src/bussiness/services/ICategoryService';
 
 @Injectable()
-export class CategoryService {
+export class CategoryService implements ICategoryService {
     constructor(
         @InjectRepository(Category)
         private readonly categoryRepository: Repository<Category>,

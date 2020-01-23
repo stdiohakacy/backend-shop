@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, Request, CacheInterceptor, UseInterceptors, CacheKey, CacheTTL, Query} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, CacheInterceptor, UseInterceptors, CacheKey, CacheTTL, Query} from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDTO } from './dto/create-product.dto';
 import ProductView from './view/product.view';
@@ -47,7 +47,7 @@ export class ProductController {
     }
 
     @Delete(':id')
-    async deleteCategory(@Param() id: number): Promise<boolean> {
+    async deleteProduct(@Param() id: number): Promise<boolean> {
         return await this.productService.deleteProduct(id);
     }
 }
