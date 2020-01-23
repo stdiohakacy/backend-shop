@@ -81,15 +81,11 @@ export class UserService {
         return new UserView(userSignUp);
     }
 
-    async signInUser(signInUserDTO: SignInUserDTO): Promise<UserView> {
-        const user = await this.userRepository.findOne({where: {
-            email: signInUserDTO.email,
-            password: crypto.createHmac('sha256', signInUserDTO.password).digest('hex'),
-        }});
+    async signInUser(email: string, password: string): Promise<UserView> {
+        const user = await this.userRepository.findOne({where: {email, password: crypto.createHmac('sha256', password).digest('hex')}});
         if (!user) {
             throw new UnauthorizedException();
         }
-
         return new UserView(user);
     }
 }
