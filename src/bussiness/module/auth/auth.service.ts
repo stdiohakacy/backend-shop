@@ -16,9 +16,7 @@ export class AuthService {
     }
 
     async login(user: UserView): Promise<AuthView> {
-        const payload = {email: user.email, id: user.id};
-        const token = this.jwtService.sign(payload);
-
+        const token = this.jwtService.sign({user});
         return new AuthView(user, token);
     }
 }
