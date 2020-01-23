@@ -1,12 +1,13 @@
-import {IsNotEmpty, IsString, IsEmail, MaxLength, IsOptional} from 'class-validator';
+import {IsString, IsEmail, MaxLength, IsOptional, IsNotEmpty} from 'class-validator';
 
-export class SignInUserDTO {
+export class SignUpUserDTO {
     @IsEmail()
-    @IsOptional()
+    @IsNotEmpty()
     @MaxLength(150)
     email: string;
 
     @IsString()
+    @IsNotEmpty()
     @MaxLength(150)
     password: string;
 

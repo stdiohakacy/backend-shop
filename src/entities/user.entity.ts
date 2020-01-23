@@ -38,10 +38,10 @@ export class User {
     @MaxLength(250)
     avatar?: string;
 
-    @BeforeInsert()
-    hashPassword() {
-        this.password = crypto.createHmac('sha256', this.password).digest('hex');
-    }
+    // @BeforeInsert()
+    // hashPassword() {
+    //     this.password = crypto.createHmac('sha256', this.password).digest('hex');
+    // }
 
     @CreateDateColumn()
     @IsDate()

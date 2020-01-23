@@ -8,6 +8,7 @@ import { ProductModule } from './module/product/product.module';
 import { PaginationModule } from './module/pagination/pagination.module';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './module/user/user.module';
+import { AuthModule } from './module/auth/auth.module';
 import * as ormconfig from './ormconfig';
 
 export function DatabaseOrmModule(): DynamicModule {
@@ -23,7 +24,8 @@ export function DatabaseOrmModule(): DynamicModule {
         CategoryModule, 
         ProductModule, 
         PaginationModule, 
-        UserModule,
+        UserModule, 
+        AuthModule,
     ],
     controllers: [AppController],
     providers: [AppService],
