@@ -1,16 +1,16 @@
 import { CreateCateDTO } from './dto/create-category.dto';
-import { Category } from '../../entities/category.entity';
 import { Injectable, NotFoundException, UnprocessableEntityException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull, getRepository } from 'typeorm';
 import { ICategoriesView } from './category.interface';
 import CategoryView from './view/category.view';
 import DataHelper from 'src/helpers/DataHelper';
-import { Product } from 'src/entities/product.entity';
-import ProductView from 'src/module/product/view/product.view';
+import { Product } from 'src/bussiness/entities/product.entity';
 import { IPaginationOptions } from '../pagination/pagination-options.interface';
 import { Pagination } from '../pagination/pagination';
 import * as faker from 'faker';
+import { Category } from 'src/bussiness/entities/category.entity';
+import ProductView from '../product/view/product.view';
 
 @Injectable()
 export class CategoryService {

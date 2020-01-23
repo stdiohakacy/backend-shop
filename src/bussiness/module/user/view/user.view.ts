@@ -1,4 +1,4 @@
-import { User } from 'src/entities/user.entity';
+import { User } from 'src/bussiness/entities/user.entity';
 
 export default class UserView {
     id: number;

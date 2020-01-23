@@ -1,4 +1,4 @@
-import { Product } from '../../../entities/product.entity';
+import { Product } from 'src/bussiness/entities/product.entity';
 
 export default class ProductView {
     id: number;

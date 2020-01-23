@@ -1,12 +1,12 @@
 import { CreateProductDTO } from './dto/create-product.dto';
 import { Injectable, NotFoundException, UnprocessableEntityException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Product } from '../../entities/product.entity';
 import { Repository, IsNull, getRepository } from 'typeorm';
 import ProductView from './view/product.view';
 import DataHelper from 'src/helpers/DataHelper';
 import { Pagination } from '../pagination/pagination';
 import { IPaginationOptions } from '../pagination/pagination-options.interface';
+import { Product } from 'src/bussiness/entities/product.entity';
 import * as faker from 'faker';
 @Injectable()
 export class ProductService {

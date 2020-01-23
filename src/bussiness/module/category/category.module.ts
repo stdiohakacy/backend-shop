@@ -2,8 +2,8 @@ import { Module, CacheModule } from '@nestjs/common';
 import { CategoryController } from './category.controller';
 import { CategoryService } from './category.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Category } from '../../entities/category.entity';
-import { Product } from 'src/entities/product.entity';
+import { Product } from 'src/bussiness/entities/product.entity';
+import { Category } from 'src/bussiness/entities/category.entity';
 
 @Module({
     imports: [

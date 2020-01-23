@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, JoinColumn, Unique } from 'typeorm';
 import { IsString, IsNotEmpty, MaxLength, IsInt, Min, Max, IsDate } from 'class-validator';
-import { Category } from 'src/entities/category.entity';
+import { Category } from 'src/bussiness/entities/category.entity';
 
 @Entity('product')
 @Unique(['name'])

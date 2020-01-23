@@ -2,7 +2,7 @@ import { SignInUserDTO } from './dto/signin-user-dto';
 import { SignUpUserDTO } from './dto/signup-user.dto';
 import { Injectable, ConflictException, UnprocessableEntityException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/entities/user.entity';
+import { User } from 'src/bussiness/entities/user.entity';
 import { Repository, IsNull, getRepository } from 'typeorm';
 import UserView from './view/user.view';
 import { IPaginationOptions } from '../pagination/pagination-options.interface';

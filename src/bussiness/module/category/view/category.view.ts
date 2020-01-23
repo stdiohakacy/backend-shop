@@ -1,4 +1,4 @@
-import { Category } from '../../../entities/category.entity';
+import { Category } from 'src/bussiness/entities/category.entity';
 
 export default class CategoryView {
     id: number;
